@@ -7,8 +7,14 @@ export default Reflux.createStore({
 
   onImport(text) {
     try {
-      let result = CSV.parse(text);
-      this.trigger(result);
+      let projects = CSV.parse(text);
+
+      // add uniq ids to result
+      projects.forEach(function(project, index) {
+        project._uid = index;
+      });
+
+      this.trigger(projects);
     } catch (e) {}
   }
 })

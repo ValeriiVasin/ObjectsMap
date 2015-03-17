@@ -1,36 +1,28 @@
 import React from 'react';
 
 export default React.createClass({
-  toRow(item, options = { isHeader: false, key: 'header-row' }) {
+  toRow(item) {
     let content = [];
 
     for (let key in item) {
       let value = item[key];
-
-      if (options.isHeader) {
-        content.push(<th key={key}>{key}</th>);
-      } else {
-        content.push(<td key={key}>{value}</td>);
-      }
+      content.push(<td key={key}>{value}</td>);
     }
 
-    return <tr key={options.key}>{content}</tr>;
+    return <tr key={item._uid}>{content}</tr>;
   },
 
   render() {
 
-    if (!this.props.rows) {
+    if (!this.props.projects.length) {
       return null;
     }
 
-    let rows = this.props.rows;
-
-    let titleRow = this.toRow(rows[0], { isHeader: true, key: 'header' });
-    let contentRows = rows.map((row, index) => this.toRow(row, { key: `row-${index}` }));
+    let contentRows = this.props.projects.map((row, index) => this.toRow(row));
 
     return (
       <table className="table table-striped">
-        {titleRow}
+        <tr>{this.props.titles.map((title) => <th key={title}>{title}</th>)}</tr>
         {contentRows}
       </table>
     );

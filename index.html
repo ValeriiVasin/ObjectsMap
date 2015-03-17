@@ -6,7 +6,32 @@
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 <body>
+  <div class="mapSettings">
+    <h1>Map settings</h1>
+    <label for="mapMarkerTitle">Marker Title</label>
+    <select name="mapMarkerTitleSelector">
+      <option value="one">One</option>
+      <option value="two">Two</option>
+      <option value="three">Three</option>
+    </select>
+
+    <div class="mapMarkerAdressFields">
+      <h3>Provide latitude/longitude</h3>
+      <label for="mapLatitudeField">Latitude</label>
+
+      <TitleSelect onChange={} titles={} selected={value} />
+
+      <label for="mapLongitudeField">Longitude</label>
+
+      <h3>Address consists of:</h3>
+      <label for="addressField-id">ID</label>
+      <input id="addressField-id" type="checkbox" name="addressFields" value="id" />
+      <label for="addressField-name">Name</label>
+      <input id="addressField-name" type="checkbox" name="addressFields" value="name" />
+    </div>
+  </div>
   <div id="content"></div>
+
 
   <!-- development only -->
   <script src="http://localhost:8080/webpack-dev-server.js"></script>
