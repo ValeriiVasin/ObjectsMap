@@ -7,13 +7,21 @@ export default Reflux.createStore({
 
   projects: [],
 
-  onFilter(filterStr) {
-    filterStr = filterStr.toLowerCase();
+  filter: '',
 
-    let projects = this.projects.filter((project) => {
+  getProjects() {
+    let projects = this.projects;
+    let filter = this.filter.trim().toLowerCase();
+
+    // filtering
+    if (!filter) {
+      return projects;
+    }
+
+    projects = projects.filter((project) => {
       for (let key in project) {
         if (project.hasOwnProperty(key)) {
-          if (String(project[key]).toLowerCase().indexOf(filterStr) !== -1) {
+          if (String(project[key]).toLowerCase().indexOf(filter) !== -1) {
             return true;
           }
         }
@@ -22,7 +30,12 @@ export default Reflux.createStore({
       return false;
     });
 
-    this.trigger(projects);
+    return projects;
+  },
+
+  onFilter(filter) {
+    this.filter = filter;
+    this.trigger(this.getProjects());
   },
 
   onImport(text) {
@@ -36,7 +49,7 @@ export default Reflux.createStore({
 
       this.projects = projects;
 
-      this.trigger(projects);
+      this.trigger(this.getProjects());
     } catch (e) {}
   }
 })
