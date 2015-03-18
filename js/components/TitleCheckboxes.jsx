@@ -33,14 +33,14 @@ export default React.createClass({
     let checkboxes = this.props.titles.map((title) => {
       let _uid = uid('title_uid_');
       return (
-        <label key={_uid} htmlFor={_uid} className="checkbox-inline" value={title}>
-          <input
-            type="checkbox"
-            checked={this.state.checked[title]}
-            id={_uid}
-            onChange={this.onChange.bind(this, title)}
-            />{title}
-        </label>
+        <div className="checkbox" key={title}>
+          <label>
+            <input
+              type="checkbox"
+              onChange={this.onChange.bind(this, title)}
+              />{title}
+          </label>
+        </div>
       );
     });
 

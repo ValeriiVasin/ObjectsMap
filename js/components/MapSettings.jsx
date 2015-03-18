@@ -1,7 +1,9 @@
 import React from 'react';
-import uid from 'lodash/utility/uniqueId'
+import uid from 'lodash/utility/uniqueId';
+import assign from 'lodash/object/extend';
 
 import TitleSelector from './TitleSelector.jsx';
+import TitleCheckboxes from './TitleCheckboxes.jsx';
 
 // * Select marker title
 //
@@ -13,13 +15,16 @@ import TitleSelector from './TitleSelector.jsx';
 export default React.createClass({
   getInitialState() {
     return {
-      markerField: null,
+      markerField: this.props.titles[0],
 
       // latlng or address
       addressType: 'latlng',
 
       // lat/lng fields (for latlng type)
-      addressLatLng: { lat: null, lng: null },
+      addressLatLng: {
+        lat: this.props.titles[0],
+        lng: this.props.titles[0]
+      },
 
       // full address (for address type)
       addressFields: {}
@@ -30,9 +35,22 @@ export default React.createClass({
     this.setState({ markerField: field });
   },
 
-  setAddressType(value) {
-    this.setState({ addressType: value })
-    console.log(value);
+  setAddressType(field) {
+    this.setState({ addressType: field })
+  },
+
+  setAddressLatLng(type, field) {
+    this.setState({
+      addressLatLng: assign({}, this.state.addressLatLng, {
+        [type]: field
+      })
+    });
+  },
+
+  setAddressFields(fields) {
+    this.setState({
+      addressFields: fields
+    });
   },
 
   render() {
@@ -47,34 +65,58 @@ export default React.createClass({
       </div>
     );
 
-    let uidLat = uid('label_');
-    let uidLng = uid('label_');
     let name = uid('name_');
-
     let addressType = (
       <div className="form-group">
         <h3>Select address type</h3>
-        <label htmlFor={uidLat} className="checkbox-inline">
+        <label className="checkbox-inline">
           <input
             type="radio"
             name={name}
-            id={uidLat}
             value="latlng"
-            selected={this.state.addressType === 'latlng'}
+            checked={this.state.addressType === 'latlng'}
             onChange={this.setAddressType.bind(this, 'latlng')}
-            />Latitude / Longitude
+            /> Latitude / Longitude
         </label>
 
-        <label htmlFor={uidLng} className="checkbox-inline">
+        <label className="checkbox-inline">
           <input
             type="radio"
             name={name}
-            id={uidLng}
             value="address"
-            selected={this.state.addressType === 'address'}
+            checked={this.state.addressType === 'address'}
             onChange={this.setAddressType.bind(this, 'address')}
-            />Address
+            /> Address
         </label>
+      </div>
+    );
+
+    let latLngAddress = (
+      <div className="form-group">
+        <h3>Select latitude/longitude fields:</h3>
+        <label>Latitude</label>
+        <TitleSelector
+          titles={this.props.titles}
+          onChange={this.setAddressLatLng.bind(this, 'lat')}
+          value={this.state.addressLatLng.lat}
+          />
+
+        <label>Longitude</label>
+        <TitleSelector
+          titles={this.props.titles}
+          onChange={this.setAddressLatLng.bind(this, 'lng')}
+          value={this.state.addressLatLng.lng}
+          />
+      </div>
+    );
+
+    let fullAddress = (
+      <div className="form-group">
+        <h3>Address contains fields:</h3>
+        <TitleCheckboxes
+          titles={this.props.titles}
+          onChange={this.setAddressFields}
+          />
       </div>
     );
 
@@ -83,6 +125,7 @@ export default React.createClass({
         <h1>Map settings!</h1>
         {markerField}
         {addressType}
+        {this.state.addressType === 'latlng' ? latLngAddress : fullAddress}
       </div>
     );
   }

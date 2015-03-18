@@ -9,7 +9,8 @@ export default React.createClass({
       return null;
     }
 
-    let titles = Object.keys(this.props.projects[0]);
+    let titles = Object.keys(this.props.projects[0])
+      .filter((title) => title !== '_uid');
 
     return (
       <div>
