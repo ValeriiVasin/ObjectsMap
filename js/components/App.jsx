@@ -5,8 +5,10 @@ import ImportArea from './ImportArea.jsx';
 import Table from './Table.jsx';
 import Map from './Map.jsx';
 import TitleSelector from './TitleSelector.jsx';
+import TitleCheckboxes from './TitleCheckboxes.jsx';
 
-import ProjectsStore from '../store';
+import ProjectsStore from '../store/projects';
+import Actions from '../actions';
 
 export default React.createClass({
   mixins: [Reflux.listenTo(ProjectsStore, 'onChange')],
@@ -20,16 +22,22 @@ export default React.createClass({
 
   onChange(projects) {
     this.setState({
-      projects: projects,
-      titles: Object.keys(projects[0]).filter((name) => name !== '_uid')
+      projects: projects || [],
+      titles: projects && projects.length ?
+              Object.keys(projects[0]).filter((name) => name !== '_uid') :
+              []
     });
+  },
+
+  onFilterChange(event) {
+    Actions.filter(event.target.value.trim());
   },
 
   render() {
     return <div>
-      <TitleSelector titles={this.state.titles} />
       <Map projects={this.state.projects} />
       <ImportArea />
+      <input onChange={this.onFilterChange} />
       <Table projects={this.state.projects} titles={this.state.titles} />
     </div>;
   }

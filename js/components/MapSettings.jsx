@@ -1,9 +1,12 @@
 import React from 'react';
+import Reflux from 'reflux';
 import uid from 'lodash/utility/uniqueId';
 import assign from 'lodash/object/extend';
 
 import TitleSelector from './TitleSelector.jsx';
 import TitleCheckboxes from './TitleCheckboxes.jsx';
+import Actions from '../actions';
+import MapStore from '../store/map';
 
 // * Select marker title
 //
@@ -29,6 +32,11 @@ export default React.createClass({
       // full address (for address type)
       addressFields: {}
     }
+  },
+
+  save(event) {
+    event.preventDefault();
+    Actions.saveMapSettings(this.state);
   },
 
   setMarkerField(field) {
@@ -121,12 +129,13 @@ export default React.createClass({
     );
 
     return (
-      <div>
+      <form onSubmit={this.save}>
         <h1>Map settings!</h1>
         {markerField}
         {addressType}
         {this.state.addressType === 'latlng' ? latLngAddress : fullAddress}
-      </div>
+        <button>Save</button>
+      </form>
     );
   }
 });

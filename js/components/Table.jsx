@@ -22,8 +22,10 @@ export default React.createClass({
 
     return (
       <table className="table table-striped">
-        <tr>{this.props.titles.map((title) => <th key={title}>{title}</th>)}</tr>
-        {contentRows}
+        <tbody>
+          <tr>{this.props.titles.map((title) => <th key={title}>{title}</th>)}</tr>
+          {contentRows}
+        </tbody>
       </table>
     );
   }
