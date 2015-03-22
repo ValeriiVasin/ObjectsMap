@@ -107,6 +107,7 @@ export default React.createClass({
         <TitleCheckboxes
           titles={this.state.titles}
           onChange={Actions.setAddressFields}
+          checked={this.state.settings.addressFields}
           />
       </div>
     );

@@ -5,7 +5,7 @@ import assign from 'lodash/object/extend'
 export default React.createClass({
   getInitialState() {
     return {
-      checked: {}
+      checked: this.props.checked || {}
     };
   },
 
@@ -38,6 +38,7 @@ export default React.createClass({
             <input
               type="checkbox"
               onChange={this.onChange.bind(this, title)}
+              checked={this.state.checked[title]}
               />{title}
           </label>
         </div>
