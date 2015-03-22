@@ -4,6 +4,7 @@ export default Reflux.createActions([
   'save',
   'setMarkerField',
   'setAddressFields',
-  'setAddressLatLng',
+  'setAddressLat',
+  'setAddressLng',
   'setAddressType'
 ]);
