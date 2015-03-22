@@ -1,5 +1,5 @@
 import React from 'react';
-import Actions from '../actions';
+import Actions from '../actions/projects';
 
 let sample = `
 Id,Company Name,Founder,City,Country,Postal Code, Street,Photo,Home Page,Garage Latitude,Garage Longitude

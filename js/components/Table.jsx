@@ -1,7 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 
-import Actions from '../actions';
+import Actions from '../actions/projects';
 import ProjectsStore from '../store/projects';
 
 function getStateFromStores() {

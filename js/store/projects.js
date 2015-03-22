@@ -1,5 +1,5 @@
 import Reflux from 'reflux';
-import Actions from '../actions';
+import Actions from '../actions/projects';
 import CSV from '../vendor/csv';
 
 import sortBy from 'lodash/collection/sortBy';
