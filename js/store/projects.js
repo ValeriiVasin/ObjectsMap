@@ -1,12 +1,16 @@
 import Reflux from 'reflux';
 import Actions from '../actions';
 import CSV from '../vendor/csv';
+
 import sortBy from 'lodash/collection/sortBy';
+import _ from 'lodash';
 
 export default Reflux.createStore({
   listenables: [Actions],
 
   projects: [],
+
+  titles: [],
 
   filter: '',
 
@@ -47,13 +51,11 @@ export default Reflux.createStore({
       }
     }
 
-    // determine all checked state
-    this.isAllChecked = projects.every((project) => project.show);
+    return projects;
+  },
 
-    return {
-      projects: projects,
-      isAllChecked: this.isAllChecked
-    };
+  getTitles() {
+    return this.titles;
   },
 
   onSortBy(field) {
@@ -65,12 +67,12 @@ export default Reflux.createStore({
       this.sortOrder = 'ASC';
     }
 
-    this.trigger(this.getProjects());
+    this.trigger();
   },
 
   onFilter(filter) {
     this.filter = filter;
-    this.trigger(this.getProjects());
+    this.trigger();
   },
 
   onImport(text) {
@@ -85,8 +87,9 @@ export default Reflux.createStore({
       }, this);
 
       this.projects = projects;
+      this.titles = _.chain(projects).first().keys().without('show', '_uid').value();
 
-      this.trigger(this.getProjects());
+      this.trigger();
     } catch (e) {}
   },
 
@@ -99,7 +102,7 @@ export default Reflux.createStore({
       return project;
     });
 
-    this.trigger(this.getProjects());
+    this.trigger();
   },
 
   onToggleProject(uid) {
@@ -111,6 +114,8 @@ export default Reflux.createStore({
       return project;
     });
 
-    this.trigger(this.getProjects());
+    this.isAllChecked = this.getProjects().every((project) => project.show);
+
+    this.trigger();
   }
 })
