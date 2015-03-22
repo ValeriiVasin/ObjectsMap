@@ -4,5 +4,7 @@ export default Reflux.createActions([
   'import',
   'sortBy',
   'filter',
-  'saveMapSettings'
+  'saveMapSettings',
+  'toggleProjects',
+  'toggleProject'
 ]);

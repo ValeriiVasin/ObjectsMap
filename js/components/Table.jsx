@@ -3,15 +3,24 @@ import React from 'react';
 import Actions from '../actions';
 
 export default React.createClass({
-  toRow(item) {
-    let content = [];
+  toRow(project) {
+    let content = [
+      <td key={'project_' + project._uid}>
+        <input
+          type="checkbox"
+          checked={project.show}
+          onChange={Actions.toggleProject.bind(null, project._uid)}
+          title={project.show ? 'Hide project on map' : 'Show project on map'}
+          />
+      </td>
+    ];
 
-    for (let key in item) {
-      let value = item[key];
+    for (let key in project) {
+      let value = project[key];
       content.push(<td key={key}>{value}</td>);
     }
 
-    return <tr key={item._uid}>{content}</tr>;
+    return <tr key={project._uid}>{content}</tr>;
   },
 
   sortBy(field) {
@@ -24,15 +33,23 @@ export default React.createClass({
       return null;
     }
 
-    let contentRows = this.props.projects.map((row, index) => this.toRow(row));
+    let contentRows = this.props.projects.map((project, index) => this.toRow(project));
     let headerRows = (
-      <tr>{this.props.titles.map((title) => {
-        return (
-          <th key={title}>
-            <a href="javascript:void(0)" onClick={this.sortBy.bind(this, title)}>{title}</a>
-          </th>
-        );
-      })}</tr>
+      <tr>
+        <th><input
+          type="checkbox"
+          onChange={Actions.toggleProjects}
+          checked={this.props.isAllChecked}
+          title={ this.props.isAllChecked ? 'Hide all on map' : 'Show all on map' }
+          /></th>
+        {this.props.titles.map((title) => {
+          return (
+            <th key={title}>
+              <a href="javascript:void(0)" onClick={this.sortBy.bind(this, title)}>{title}</a>
+            </th>
+          );
+        })}
+      </tr>
     );
 
     return (

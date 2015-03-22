@@ -16,16 +16,20 @@ export default React.createClass({
   getInitialState() {
     return {
       projects: [],
-      titles: []
+      titles: [],
+      isAllChecked: false
     };
   },
 
-  onChange(projects) {
+  onChange(payload) {
+    let projects = payload.projects;
+
     this.setState({
       projects: projects || [],
       titles: projects && projects.length ?
               Object.keys(projects[0]).filter((name) => name !== '_uid') :
-              []
+              [],
+      isAllChecked: payload.isAllChecked
     });
   },
 
@@ -38,7 +42,11 @@ export default React.createClass({
       <Map projects={this.state.projects} />
       <ImportArea />
       <input onChange={this.onFilterChange} />
-      <Table projects={this.state.projects} titles={this.state.titles} />
+      <Table
+        projects={this.state.projects}
+        titles={this.state.titles}
+        isAllChecked={this.state.isAllChecked}
+        />
     </div>;
   }
 });

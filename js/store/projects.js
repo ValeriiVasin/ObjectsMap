@@ -13,6 +13,8 @@ export default Reflux.createStore({
   sortField: null,
   sortOrder: 'ASC',
 
+  isAllChecked: false,
+
   getProjects() {
     let projects = this.projects;
     let filter = this.filter.trim().toLowerCase();
@@ -45,7 +47,13 @@ export default Reflux.createStore({
       }
     }
 
-    return projects;
+    // determine all checked state
+    this.isAllChecked = projects.every((project) => project.show);
+
+    return {
+      projects: projects,
+      isAllChecked: this.isAllChecked
+    };
   },
 
   onSortBy(field) {
@@ -72,11 +80,37 @@ export default Reflux.createStore({
       // add uniq ids to result
       projects.forEach(function(project, index) {
         project._uid = index;
-      });
+        project.show = true;
+        this.isAllChecked = true;
+      }, this);
 
       this.projects = projects;
 
       this.trigger(this.getProjects());
     } catch (e) {}
+  },
+
+  onToggleProjects() {
+    this.isAllChecked = !this.isAllChecked;
+    let state = this.isAllChecked;
+
+    this.projects = this.projects.map((project) => {
+      project.show = state;
+      return project;
+    });
+
+    this.trigger(this.getProjects());
+  },
+
+  onToggleProject(uid) {
+    this.projects = this.projects.map((project) => {
+      if (project._uid === uid) {
+        project.show = !project.show;
+      }
+
+      return project;
+    });
+
+    this.trigger(this.getProjects());
   }
 })
