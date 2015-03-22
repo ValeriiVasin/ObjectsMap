@@ -5,8 +5,17 @@ import assign from 'lodash/object/extend';
 
 import TitleSelector from './TitleSelector.jsx';
 import TitleCheckboxes from './TitleCheckboxes.jsx';
-import Actions from '../actions';
+import Actions from '../actions/map';
+
 import MapStore from '../store/map';
+import ProjectsStore from '../store/projects';
+
+function getStateFromStores() {
+  return {
+    titles: ProjectsStore.getTitles(),
+    settings: MapStore.getSettings()
+  }
+}
 
 // * Select marker title
 //
@@ -16,60 +25,34 @@ import MapStore from '../store/map';
 //   - address => selects + add field
 
 export default React.createClass({
+  mixins: [
+    Reflux.listenTo(ProjectsStore, '_onChange'),
+    Reflux.listenTo(MapStore, '_onChange')
+  ],
+
   getInitialState() {
-    return {
-      markerField: this.props.titles[0],
+    return getStateFromStores();
+  },
 
-      // latlng or address
-      addressType: 'latlng',
-
-      // lat/lng fields (for latlng type)
-      addressLatLng: {
-        lat: this.props.titles[0],
-        lng: this.props.titles[0]
-      },
-
-      // full address (for address type)
-      addressFields: {}
-    }
+  _onChange() {
+    this.setState(getStateFromStores());
+    console.log(getStateFromStores().settings);
   },
 
   save(event) {
     event.preventDefault();
-    Actions.saveMapSettings(this.state);
-  },
-
-  setMarkerField(field) {
-    this.setState({ markerField: field });
-  },
-
-  setAddressType(field) {
-    this.setState({ addressType: field })
-  },
-
-  setAddressLatLng(type, field) {
-    this.setState({
-      addressLatLng: assign({}, this.state.addressLatLng, {
-        [type]: field
-      })
-    });
-  },
-
-  setAddressFields(fields) {
-    this.setState({
-      addressFields: fields
-    });
+    Actions.save();
   },
 
   render() {
-    if (!this.props.titles || !this.props.titles.length) {
+    if (!this.state.titles || !this.state.titles.length) {
       return null;
     }
 
     let markerField = (
       <div className="form-group">
         <h3>Select field to be displayed in the marker</h3>
-        <TitleSelector titles={this.props.titles} onChange={this.setMarkerField} />
+        <TitleSelector titles={this.state.titles} onChange={Actions.setMarkerField} />
       </div>
     );
 
@@ -82,8 +65,8 @@ export default React.createClass({
             type="radio"
             name={name}
             value="latlng"
-            checked={this.state.addressType === 'latlng'}
-            onChange={this.setAddressType.bind(this, 'latlng')}
+            checked={this.state.settings.addressType === 'latlng'}
+            onChange={Actions.setAddressType.bind(Actions, 'latlng')}
             /> Latitude / Longitude
         </label>
 
@@ -92,8 +75,8 @@ export default React.createClass({
             type="radio"
             name={name}
             value="address"
-            checked={this.state.addressType === 'address'}
-            onChange={this.setAddressType.bind(this, 'address')}
+            checked={this.state.settings.addressType === 'address'}
+            onChange={Actions.setAddressType.bind(Actions, 'address')}
             /> Address
         </label>
       </div>
@@ -104,16 +87,16 @@ export default React.createClass({
         <h3>Select latitude/longitude fields:</h3>
         <label>Latitude</label>
         <TitleSelector
-          titles={this.props.titles}
-          onChange={this.setAddressLatLng.bind(this, 'lat')}
-          value={this.state.addressLatLng.lat}
+          titles={this.state.titles}
+          onChange={Actions.setAddressLat}
+          value={this.state.settings.addressLat}
           />
 
         <label>Longitude</label>
         <TitleSelector
-          titles={this.props.titles}
-          onChange={this.setAddressLatLng.bind(this, 'lng')}
-          value={this.state.addressLatLng.lng}
+          titles={this.state.titles}
+          onChange={Actions.setAddressLng}
+          value={this.state.settings.addressLng}
           />
       </div>
     );
@@ -122,18 +105,17 @@ export default React.createClass({
       <div className="form-group">
         <h3>Address contains fields:</h3>
         <TitleCheckboxes
-          titles={this.props.titles}
-          onChange={this.setAddressFields}
+          titles={this.state.titles}
+          onChange={Actions.setAddressFields}
           />
       </div>
     );
-
     return (
       <form onSubmit={this.save}>
         <h1>Map settings!</h1>
         {markerField}
         {addressType}
-        {this.state.addressType === 'latlng' ? latLngAddress : fullAddress}
+        {this.state.settings.addressType === 'latlng' ? latLngAddress : fullAddress}
         <button>Save</button>
       </form>
     );
