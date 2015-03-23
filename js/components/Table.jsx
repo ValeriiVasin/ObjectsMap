@@ -37,10 +37,9 @@ export default React.createClass({
       </td>
     ];
 
-    for (let key in project) {
-      let value = project[key];
-      content.push(<td key={key}>{value}</td>);
-    }
+    this.state.titles.forEach((title) => {
+      content.push(<td key={title}>{project[title]}</td>);
+    });
 
     return <tr key={project._uid}>{content}</tr>;
   },
